@@ -114,19 +114,6 @@ public class GameEvent : MonoBehaviour
     [Space(7)]
     public bool IsPrimed = true;
 
-    /*
-    /// <summary>
-    /// "Activatable" indicates when this GameEvent is ready to be called.
-    /// 
-    /// <br>Auto sets self to TRUE on enable.</br>
-    /// <br>Auto sets self to FALSE on disable.</br>
-    /// </summary>
-    [Space(7)]
-    [SerializeField] bool activatable = true;               //Can change in inspector, but will handle by itself on enable, disable
-    [SerializeField] float activateCooldown;
-    [SerializeField] private float activateCooldownTimer;   //Inspector use only. Changing does nothing.
-    */
-
     public bool IsRunning
     {
         get { return (_runningEvents != null); }
@@ -180,23 +167,10 @@ public class GameEvent : MonoBehaviour
         }
 
         RoomErrorCheck();
-
-        /*
-        if (activateCooldown < 0)
-            activateCooldown = 0f;
-        */
     }
 
     public virtual void StartEvents()
     {
-        /*
-        if (!activatable)
-        {
-            DebugLog("StartEvent: Received StartEvents() call but cannot run because not activatable.", this.gameObject);
-            return;
-        }
-        */
-
         if (!IsPrimed)
         {
             Debug.LogWarning($"({this.gameObject.name}) Received StartEvents call, but was not primed.", this.gameObject);
@@ -210,7 +184,6 @@ public class GameEvent : MonoBehaviour
 
         _runningEvents = StartCoroutine(ActivateEventsRoutine());
     }
-
 
     public virtual void StopEvents()
     {
@@ -278,34 +251,6 @@ public class GameEvent : MonoBehaviour
 
         yield return null;
     }
-
-
-    /// <summary>
-    /// Run through a cooldown timer. Displays the time in the inspector as "activateCooldownTimer"
-    /// </summary>
-    /// <returns></returns>
-    /*
-    protected virtual IEnumerator RunCooldownTimer()
-    {
-        //Prevent any further attempts to activate this GameEvent
-        activatable = false;
-        activateCooldownTimer = activateCooldown;
-        while(true)
-        {
-            activateCooldownTimer -= Time.deltaTime;
-
-            if(activateCooldownTimer <= 0)
-            {
-                //Cooldown timer over, allow activation of this GameEvent again.
-                activatable = true;
-                activateCooldownTimer = 0;
-                yield break;
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-    */
 
 
     protected virtual void OnTriggerEnter(Collider other)
@@ -386,11 +331,6 @@ public class GameEvent : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        /*
-        activatable = true;
-        activateCooldownTimer = 0f;
-        */
-
         GameCameraManager cameraManager = FindObjectOfType<GameCameraManager>();
         if (cameraManager)
         {
@@ -432,11 +372,6 @@ public class GameEvent : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        /*
-        activatable = false;
-        activateCooldownTimer = 0f;
-        */
-
         GameCameraManager cameraManager = FindObjectOfType<GameCameraManager>();
         if (cameraManager)
         {
@@ -472,14 +407,6 @@ public class GameEvent : MonoBehaviour
                 Debug.LogError($"Room to check is null, but the Activation Method is set to {type}.", this.gameObject);
         }
     }
-
-    /*
-    private void StartActivateCooldownTimer()
-    {
-        if (activatable)
-            StartCoroutine(RunCooldownTimer());
-    }
-    */
 
     /// <summary>
     /// Called from OnTriggerEnter/Exit to see if the collider meets the criteria specified from _triggerCondition.
